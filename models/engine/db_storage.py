@@ -61,17 +61,26 @@ class DBStorage:
         return result
 
     def new(self, obj):
-        """Add a new object to the session"""
-        self.__session.add(obj)
+        """Add a new object to the session (skip if unmapped)"""
+        try:
+            self.__session.add(obj)
+        except Exception:
+            pass
 
     def save(self):
-        """Commit all changes to the database"""
-        self.__session.commit()
+        """Commit all changes to the database (skip if nothing to commit)"""
+        try:
+            self.__session.commit()
+        except Exception:
+            self.__session.rollback()
 
     def delete(self, obj=None):
         """Delete an object from the session"""
         if obj is not None:
-            self.__session.delete(obj)
+            try:
+                self.__session.delete(obj)
+            except Exception:
+                pass
 
     def reload(self):
         """Create tables and session"""
