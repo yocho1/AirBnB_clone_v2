@@ -9,8 +9,9 @@ from sqlalchemy.ext.declarative import declarative_base
 Base = declarative_base()
 
 
-class BaseModel:
+class BaseModel(Base):
     """Base class for all AirBnB models"""
+    __abstract__ = True
 
     id = Column(String(60), primary_key=True,
                 default=lambda: str(uuid.uuid4()))
