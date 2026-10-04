@@ -23,6 +23,9 @@ CLASSES = {
 }
 
 
+DB_MODE = os.getenv("HBNB_TYPE_STORAGE") == "db"
+
+
 class TestAllClassesSerialization(unittest.TestCase):
     """Verify to_dict, reconstruction, and save work for every class."""
 
@@ -80,6 +83,7 @@ class TestAllClassesSerialization(unittest.TestCase):
                 )
                 self.assertEqual(new_obj.__class__.__name__, cls_name)
 
+    @unittest.skipIf(DB_MODE, "FileStorage only")
     def test_save_persists_to_storage(self):
         """save() updates updated_at and persists the storage key."""
         for cls_name, cls in CLASSES.items():

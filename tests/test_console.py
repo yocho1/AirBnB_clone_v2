@@ -7,6 +7,7 @@ from unittest.mock import patch
 from console import HBNBCommand
 from models import storage
 
+DB_MODE = os.getenv("HBNB_TYPE_STORAGE") == "db"
 CLASSES = ["BaseModel", "User", "State", "City",
            "Amenity", "Place", "Review"]
 
@@ -43,6 +44,7 @@ class TestHBNBCommand_create(unittest.TestCase):
             HBNBCommand().onecmd("create FakeClass")
         self.assertEqual(output.getvalue().strip(), expected)
 
+    @unittest.skipIf(DB_MODE, "FileStorage only")
     def test_create_valid_class(self):
         """Test output and storage side effects for a valid create."""
         with patch('sys.stdout', new=StringIO()) as output:
@@ -52,6 +54,7 @@ class TestHBNBCommand_create(unittest.TestCase):
         key = "BaseModel.{}".format(generated_id)
         self.assertIn(key, storage.all())
 
+    @unittest.skipIf(DB_MODE, "FileStorage only")
     def test_create_all_classes(self):
         """Test creating instances for all supported AirBnB models."""
         for cls_name in CLASSES:
@@ -112,6 +115,7 @@ class TestHBNBCommand_show(unittest.TestCase):
             HBNBCommand().onecmd("show BaseModel fake-id-123")
         self.assertEqual(output.getvalue().strip(), expected)
 
+    @unittest.skipIf(DB_MODE, "FileStorage only")
     def test_show_valid(self):
         """Test showing a valid existing instance."""
         with patch('sys.stdout', new=StringIO()) as create_out:
@@ -125,6 +129,7 @@ class TestHBNBCommand_show(unittest.TestCase):
         expected_prefix = "[BaseModel] ({})".format(obj_id)
         self.assertTrue(out_str.startswith(expected_prefix))
 
+    @unittest.skipIf(DB_MODE, "FileStorage only")
     def test_show_all_classes(self):
         """Test showing a valid instance for every supported class."""
         for cls_name in CLASSES:
@@ -188,6 +193,7 @@ class TestHBNBCommand_destroy(unittest.TestCase):
             HBNBCommand().onecmd("destroy BaseModel fake-id-123")
         self.assertEqual(output.getvalue().strip(), expected)
 
+    @unittest.skipIf(DB_MODE, "FileStorage only")
     def test_destroy_valid(self):
         """Test destroying an instance removes it from storage."""
         with patch('sys.stdout', new=StringIO()) as create_out:
@@ -201,6 +207,7 @@ class TestHBNBCommand_destroy(unittest.TestCase):
 
         self.assertNotIn(key, storage.all())
 
+    @unittest.skipIf(DB_MODE, "FileStorage only")
     def test_destroy_all_classes(self):
         """Test destroying a valid instance for every supported class."""
         for cls_name in CLASSES:
@@ -249,6 +256,7 @@ class TestHBNBCommand_all(unittest.TestCase):
             HBNBCommand().onecmd("all")
         self.assertEqual(output.getvalue().strip(), "[]")
 
+    @unittest.skipIf(DB_MODE, "FileStorage only")
     def test_all_with_objects(self):
         """Test all command output with existing instances."""
         with patch('sys.stdout', new=StringIO()) as create1:
@@ -334,6 +342,7 @@ class TestHBNBCommand_update(unittest.TestCase):
             HBNBCommand().onecmd("update BaseModel fake-id-123")
         self.assertEqual(output.getvalue().strip(), expected)
 
+    @unittest.skipIf(DB_MODE, "FileStorage only")
     def test_update_missing_attr_name(self):
         """Test output when attribute name is missing."""
         with patch('sys.stdout', new=StringIO()) as create_out:
@@ -345,6 +354,7 @@ class TestHBNBCommand_update(unittest.TestCase):
             HBNBCommand().onecmd("update BaseModel {}".format(obj_id))
         self.assertEqual(output.getvalue().strip(), expected)
 
+    @unittest.skipIf(DB_MODE, "FileStorage only")
     def test_update_missing_attr_value(self):
         """Test output when attribute value is missing."""
         with patch('sys.stdout', new=StringIO()) as create_out:
@@ -356,6 +366,7 @@ class TestHBNBCommand_update(unittest.TestCase):
             HBNBCommand().onecmd("update BaseModel {} name".format(obj_id))
         self.assertEqual(output.getvalue().strip(), expected)
 
+    @unittest.skipIf(DB_MODE, "FileStorage only")
     def test_update_valid(self):
         """Test updating an instance attribute dynamically."""
         with patch('sys.stdout', new=StringIO()) as create_out:
@@ -372,6 +383,7 @@ class TestHBNBCommand_update(unittest.TestCase):
         self.assertTrue(hasattr(obj, "name"))
         self.assertEqual(obj.name, "New Name")
 
+    @unittest.skipIf(DB_MODE, "FileStorage only")
     def test_update_all_classes(self):
         """Test updating an attribute for every supported class."""
         for cls_name in CLASSES:
