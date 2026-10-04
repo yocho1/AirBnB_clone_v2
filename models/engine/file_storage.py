@@ -11,9 +11,15 @@ class FileStorage:
     __file_path = "file.json"
     __objects = {}
 
-    def all(self):
-        """Return all objects"""
-        return FileStorage.__objects
+    def all(self, cls=None):
+        """Return all objects, optionally filtered by class"""
+        if cls is None:
+            return FileStorage.__objects
+        if isinstance(cls, str):
+            return {k: v for k, v in FileStorage.__objects.items()
+                    if type(v).__name__ == cls}
+        return {k: v for k, v in FileStorage.__objects.items()
+                if type(v) is cls}
 
     def new(self, obj):
         """Add object to storage"""
@@ -49,7 +55,7 @@ class FileStorage:
         }
 
         if not os.path.exists(FileStorage.__file_path):
-            FileStorage.__objects = {}
+            FileStorage.__objects.clear()
             return
 
         try:
@@ -62,7 +68,7 @@ class FileStorage:
                         obj = cls(**dict_obj)
                         FileStorage.__objects[key] = obj
         except (FileNotFoundError, json.JSONDecodeError):
-            FileStorage.__objects = {}
+            FileStorage.__objects.clear()
 
     def delete(self, obj=None):
         """Delete an object from storage"""

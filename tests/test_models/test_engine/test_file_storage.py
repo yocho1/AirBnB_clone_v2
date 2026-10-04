@@ -69,3 +69,47 @@ class TestFileStorage(unittest.TestCase):
             os.remove(self.test_file)
         self.storage.reload()  # Should not raise exception
         self.assertEqual(len(self.storage.all()), 0)
+
+
+@unittest.skipIf(os.getenv("HBNB_TYPE_STORAGE") == "db",
+                 "FileStorage only")
+class TestFileStorageDelete(unittest.TestCase):
+    """Tests for delete() and all(cls)"""
+
+    def setUp(self):
+        """Empty storage"""
+        storage.all().clear()
+
+    def tearDown(self):
+        """Empty storage and remove the file"""
+        storage.all().clear()
+        if os.path.exists("file.json"):
+            os.remove("file.json")
+
+    def test_delete_removes_object(self):
+        """delete() removes obj from __objects"""
+        state = State()
+        storage.new(state)
+        storage.delete(state)
+        self.assertNotIn("State.{}".format(state.id), storage.all())
+
+    def test_delete_none_does_nothing(self):
+        """delete(None) changes nothing"""
+        state = State()
+        storage.new(state)
+        storage.delete(None)
+        self.assertEqual(len(storage.all()), 1)
+
+    def test_delete_missing_object(self):
+        """delete() of an unknown object does not fail"""
+        storage.delete(State())
+        self.assertEqual(len(storage.all()), 0)
+
+    def test_all_filters_by_class(self):
+        """all(cls) returns only that class"""
+        state = State()
+        city = City()
+        storage.new(state)
+        storage.new(city)
+        self.assertEqual(list(storage.all(State).values()), [state])
+        self.assertEqual(len(storage.all()), 2)
