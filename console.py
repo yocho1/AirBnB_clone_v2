@@ -1,6 +1,7 @@
 #!/usr/bin/python3
 """Command interpreter for AirBnB clone"""
 
+import re
 import cmd
 import shlex
 from models import storage
@@ -11,6 +12,29 @@ from models.state import State
 from models.city import City
 from models.amenity import Amenity
 from models.review import Review
+
+
+PARAM_RE = r'(\S+?)=("(?:\\.|[^"\\])*"|\S+)'
+
+
+def parse_value(raw):
+    """Convert a raw parameter value to str, float or int.
+
+    Return None if the value is not valid (the parameter is skipped).
+    """
+    if raw.startswith('"'):
+        if len(raw) < 2 or not raw.endswith('"'):
+            return None
+        inner = raw[1:-1]
+        if re.search(r'(?<!\\)"', inner):
+            return None
+        return inner.replace('\\"', '"').replace('_', ' ')
+    try:
+        if '.' in raw:
+            return float(raw)
+        return int(raw)
+    except ValueError:
+        return None
 
 
 class HBNBCommand(cmd.Cmd):
@@ -44,18 +68,33 @@ class HBNBCommand(cmd.Cmd):
         cmd.Cmd.do_help(self, arg)
 
     def do_create(self, arg):
-        """Create a new instance of a class"""
-        if not arg:
+        """Create an instance: create <Class> <key>=<value> ..."""
+        from models.base_model import BaseModel
+        from models.user import User
+        from models.state import State
+        from models.city import City
+        from models.amenity import Amenity
+        from models.place import Place
+        from models.review import Review
+        classes = {"BaseModel": BaseModel, "User": User, "State": State,
+                   "City": City, "Amenity": Amenity, "Place": Place,
+                   "Review": Review}
+        args = arg.split(None, 1)
+        if not args:
             print("** class name missing **")
             return
-        args = arg.split()
-        class_name = args[0]
-        if class_name not in self.__classes:
+        if args[0] not in classes:
             print("** class doesn't exist **")
             return
-        new_obj = self.__classes[class_name]()
-        new_obj.save()
-        print(new_obj.id)
+        obj = classes[args[0]]()
+        rest = args[1] if len(args) > 1 else ""
+        for key, raw in re.findall(PARAM_RE, rest):
+            value = parse_value(raw)
+            if value is None:
+                continue
+            setattr(obj, key, value)
+        obj.save()
+        print(obj.id)
 
     def do_show(self, arg):
         """Show an instance by class name and id"""
