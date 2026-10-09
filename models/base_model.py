@@ -52,9 +52,7 @@ class BaseModel:
             for col in table.columns:
                 if col.name in self.__dict__:
                     continue
-                if isinstance(col.type, String):
-                    setattr(self, col.name, "")
-                elif isinstance(col.type, Integer):
+                if isinstance(col.type, Integer):
                     setattr(self, col.name, 0)
                 elif isinstance(col.type, Float):
                     setattr(self, col.name, 0.0)

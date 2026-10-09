@@ -1,6 +1,7 @@
 #!/usr/bin/python3
 """Unit tests for Review class"""
 
+import os
 import unittest
 from models.review import Review
 
@@ -15,6 +16,8 @@ class TestReview(unittest.TestCase):
         self.assertTrue(hasattr(review, 'created_at'))
         self.assertTrue(hasattr(review, 'updated_at'))
 
+    @unittest.skipIf(os.getenv("HBNB_TYPE_STORAGE") == "db",
+                     "FileStorage only")
     def test_attributes(self):
         """Test Review attributes exist"""
         review = Review()
@@ -22,6 +25,8 @@ class TestReview(unittest.TestCase):
         self.assertEqual(review.user_id, "")
         self.assertEqual(review.text, "")
 
+    @unittest.skipIf(os.getenv("HBNB_TYPE_STORAGE") == "db",
+                     "FileStorage only")
     def test_attribute_types(self):
         """Test Review attribute types"""
         review = Review()

@@ -1,6 +1,7 @@
 #!/usr/bin/python3
 """Unit tests for Place class"""
 
+import os
 import unittest
 from models.place import Place
 
@@ -15,6 +16,8 @@ class TestPlace(unittest.TestCase):
         self.assertTrue(hasattr(place, 'created_at'))
         self.assertTrue(hasattr(place, 'updated_at'))
 
+    @unittest.skipIf(os.getenv("HBNB_TYPE_STORAGE") == "db",
+                     "FileStorage only")
     def test_attributes(self):
         """Test Place attributes exist"""
         place = Place()

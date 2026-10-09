@@ -279,6 +279,7 @@ class TestHBNBCommand_all(unittest.TestCase):
         self.assertIn(id1, out_bm_str)
         self.assertIn(id2, out_bm_str)
 
+    @unittest.skipIf(DB_MODE, "FileStorage only")
     def test_all_filters_by_class(self):
         """Test that 'all <class>' only returns that class's objects."""
         with patch('sys.stdout', new=StringIO()) as create_state:

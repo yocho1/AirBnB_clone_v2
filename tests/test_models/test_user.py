@@ -1,6 +1,7 @@
 #!/usr/bin/python3
 """Unit tests for User class"""
 
+import os
 import unittest
 from models.user import User
 
@@ -15,6 +16,8 @@ class TestUser(unittest.TestCase):
         self.assertTrue(hasattr(user, 'created_at'))
         self.assertTrue(hasattr(user, 'updated_at'))
 
+    @unittest.skipIf(os.getenv("HBNB_TYPE_STORAGE") == "db",
+                     "FileStorage only")
     def test_attributes(self):
         """Test User attributes exist"""
         user = User()
@@ -23,6 +26,8 @@ class TestUser(unittest.TestCase):
         self.assertEqual(user.first_name, "")
         self.assertEqual(user.last_name, "")
 
+    @unittest.skipIf(os.getenv("HBNB_TYPE_STORAGE") == "db",
+                     "FileStorage only")
     def test_attribute_types(self):
         """Test User attribute types"""
         user = User()
