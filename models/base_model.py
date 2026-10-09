@@ -54,8 +54,6 @@ class BaseModel:
                     continue
                 if isinstance(col.type, Integer):
                     setattr(self, col.name, 0)
-                elif isinstance(col.type, Float):
-                    setattr(self, col.name, 0.0)
 
     def __str__(self):
         """String representation"""
