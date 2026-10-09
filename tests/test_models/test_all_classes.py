@@ -12,6 +12,7 @@ from models.amenity import Amenity
 from models.place import Place
 from models.review import Review
 
+FMT = "%Y-%m-%dT%H:%M:%S.%f"
 CLASSES = {
     "BaseModel": BaseModel,
     "User": User,
@@ -60,8 +61,8 @@ class TestAllClassesSerialization(unittest.TestCase):
                 d = obj.to_dict()
                 self.assertIsInstance(d["created_at"], str)
                 self.assertIsInstance(d["updated_at"], str)
-                parsed_created = datetime.fromisoformat(d["created_at"])
-                parsed_updated = datetime.fromisoformat(d["updated_at"])
+                parsed_created = datetime.strptime(d["created_at"], FMT)
+                parsed_updated = datetime.strptime(d["updated_at"], FMT)
                 self.assertIsInstance(parsed_created, datetime)
                 self.assertIsInstance(parsed_updated, datetime)
 

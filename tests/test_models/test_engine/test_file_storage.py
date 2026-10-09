@@ -33,7 +33,7 @@ class TestFileStorage(unittest.TestCase):
         """Test new() method adds object"""
         obj = BaseModel()
         self.storage.new(obj)
-        key = f"{obj.__class__.__name__}.{obj.id}"
+        key = "{}.{}".format(obj.__class__.__name__, obj.id)
         self.assertIn(key, self.storage.all())
 
     def test_save(self):
@@ -57,7 +57,7 @@ class TestFileStorage(unittest.TestCase):
         # Create new storage instance and reload
         new_storage = FileStorage()
         new_storage.reload()
-        key = f"{obj.__class__.__name__}.{obj.id}"
+        key = "{}.{}".format(obj.__class__.__name__, obj.id)
         self.assertIn(key, new_storage.all())
         reloaded_obj = new_storage.all()[key]
         self.assertEqual(reloaded_obj.name, "Test")

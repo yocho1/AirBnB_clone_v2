@@ -110,7 +110,7 @@ class HBNBCommand(cmd.Cmd):
             print("** instance id missing **")
             return
         obj_id = args[1]
-        key = f"{class_name}.{obj_id}"
+        key = "{}.{}".format(class_name, obj_id)
         all_objs = storage.all()
         if key not in all_objs:
             print("** no instance found **")
@@ -131,7 +131,7 @@ class HBNBCommand(cmd.Cmd):
             print("** instance id missing **")
             return
         obj_id = args[1]
-        key = f"{class_name}.{obj_id}"
+        key = "{}.{}".format(class_name, obj_id)
         all_objs = storage.all()
         if key not in all_objs:
             print("** no instance found **")
@@ -167,7 +167,7 @@ class HBNBCommand(cmd.Cmd):
             print("** instance id missing **")
             return
         obj_id = args[1]
-        key = f"{class_name}.{obj_id}"
+        key = "{}.{}".format(class_name, obj_id)
         all_objs = storage.all()
         if key not in all_objs:
             print("** no instance found **")
